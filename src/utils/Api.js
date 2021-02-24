@@ -90,4 +90,12 @@ class Api {
       .catch((err) => console.log(err));
   }
 }
-export default Api;
+const api = new Api({
+  baseUrl: "https://around.nomoreparties.co/v1/group-8",
+  headers: {
+    authorization: "d687320c-42a6-463a-9f18-8c281b207460",
+    "Content-Type": "application/json",
+  },
+});
+
+export default api;

@@ -1,7 +1,8 @@
 import Header from "./header.js";
 import Main from "./main.js";
 import Footer from "./footer.js";
-import PopupWithForm from "./PopupWithForm.js";
+import PopupWithForm from "./PopupWithForm";
+import ImagePopup from "./ImagePopup";
 import React, { useState, useEffect } from "react";
 
 function App() {
@@ -12,10 +13,7 @@ function App() {
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
   const [cards, setCards] = React.useState([]);
   const [enlargeImage, setEnlargeImage] = useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [imageLink, setImageLink] = React.useState("");
-  const [imageTitle, setImageTitle] = React.useState("");
-  const [currentUser, setCurrentUser] = React.useState({});
+  const [selectedCard, setSelectedCard] = React.useState({});
 
   //Open Popups
   function handleEditAvatarClick(e) {
@@ -32,15 +30,23 @@ function App() {
     setIsAddPlaceOpen(true);
   }
   function handleDeleteClick(e) {
-    e.preventDefault();
     setIsDeleteOpen(true);
   }
+  function handleCardClick(card) {
+    setEnlargeImage(true);
+    setSelectedCard(card);
+  }
   //Close Popups
-  function handlePopupClose() {
+  function closeAllPopups() {
     setIsAddPlaceOpen(false);
     setIsEditProfileOpen(false);
     setIsEditAvatarOpen(false);
     setIsDeleteOpen(false);
+    setEnlargeImage(false);
+  }
+  function handleCardClick(card) {
+    setEnlargeImage(true);
+    setSelectedCard(card);
   }
 
   return (
@@ -53,9 +59,18 @@ function App() {
             handleEditProfileClick={handleEditProfileClick}
             handleAddPlaceClick={handleAddPlaceClick}
             handleDeleteClick={handleDeleteClick}
+            handleCardClick={handleCardClick}
+            handleUpdateUser
+            cards={cards}
+          />
+          <ImagePopup
+            onClose={closeAllPopups}
+            selectedCard={selectedCard}
+            isOpen={enlargeImage}
           />
           <PopupWithForm
             isOpen={isDeleteOpen}
+            onClose={closeAllPopups}
             name="profile"
             title="Are you sure?"
             buttonText="Yes"
@@ -63,6 +78,7 @@ function App() {
 
           <PopupWithForm
             isOpen={isEditAvatarOpen}
+            onClose={closeAllPopups}
             name="avatar"
             title="Change Profile Picture"
             buttonText="Save"
@@ -82,6 +98,7 @@ function App() {
           </PopupWithForm>
           <PopupWithForm
             isOpen={isAddPlaceOpen}
+            onClose={closeAllPopups}
             name="card"
             title="New Place"
             buttonText="Save"
@@ -116,6 +133,7 @@ function App() {
           </PopupWithForm>
           <PopupWithForm
             isOpen={isEditProfileOpen}
+            onClose={closeAllPopups}
             name="profile"
             title="Edit Profile"
             buttonText="Save"
@@ -124,7 +142,7 @@ function App() {
               type="text"
               className="popup__input form_input"
               id="inputName"
-              defaultValue
+              defaultValue="Jacques Cousteau"
               name="profileName"
               minLength={2}
               maxLength={40}
@@ -151,60 +169,6 @@ function App() {
           </PopupWithForm>
 
           <Footer />
-        </div>
-
-        <template id="cardTemplate" />
-        {/* Popup for Enlarged Image */}
-        <div className="popup__image popup">
-          <div className="popup__image_cont">
-            <div className="popup__image_wrap">
-              <img className="grid__image_active" alt="" />
-              <button
-                type="button"
-                className="popup__close button"
-                aria-label="close"
-              />
-            </div>
-            <div className="popup__image_capt" />
-          </div>
-        </div>
-        {/* Popup for Avatar Image */}
-        <div className="popup popup__avatar">
-          <div className="popup__image_cont" />
-          <div className="popup__form">
-            <form
-              className="popup__avatar_form-selector form"
-              id="avatarForm"
-              name="avatarForm"
-            >
-              <h3 className="popup__heading">Change profile picture</h3>
-              <input
-                className="form_input popup__input form__input_type_avatar-link"
-                id="avatar-input"
-                type="url"
-                name="link"
-                placeholder="avatar"
-                required
-              />
-              <span
-                className="popup__form_input_type_error avatar-input-error error"
-                name="inputFile-error"
-              ></span>
-              <button
-                className="popup__card_submit-disabled popup__card_submit form__submit"
-                type="submit"
-                aria-label="Save"
-              >
-                Save
-              </button>
-            </form>
-            <button
-              type="button"
-              className="popup__close button"
-              aria-label="close"
-              name="close_card"
-            />
-          </div>
         </div>
       </div>
     </div>
