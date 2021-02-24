@@ -10,7 +10,7 @@ function Card(props) {
         type="button"
         aria-label="delete"
         onClick={() => {
-          props.handleDeleteClick(props.card);
+          props.handleDeleteClick(props.card;
         }}
       ></button>
 
