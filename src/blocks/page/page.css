@@ -11,9 +11,6 @@
   -ms-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   background-color: black;
-  min-height: 100vh;
-  min-width: 100vw;
-  overflow: auto;
 }
 
 @media screen and (max-width: 945px) {

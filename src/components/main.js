@@ -1,16 +1,12 @@
-import logo from "../images/Logo.svg";
 import React, { useState, useEffect } from "react";
-import jacques from "../images/jacques.png";
-import api from "../utils/Api";
+import api from "../utils/api";
 import Card from "./Card";
 
 function Main(props) {
   const [userName, setUserName] = React.useState("");
   const [userTitle, setUserTitle] = React.useState("");
   const [userAvatar, setUserAvatar] = React.useState("");
-  const [key, setKey] = React.useState("");
   const [cards, setCards] = React.useState([]);
-  const [selectedCard, setSelectedCard] = React.useState(null);
 
   useEffect(() => {
     api
@@ -20,7 +16,6 @@ function Main(props) {
         setUserTitle(res.about);
         // myId = res._id;
         setUserAvatar(res.avatar);
-        setKey(res._id);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -29,16 +24,9 @@ function Main(props) {
     api
       .getInitialCards()
       .then((res) => {
-        setCards(
-          res.map((card) => ({
-            name: card.name,
-            link: card.link,
-            _id: card._id,
-            likes: card.likes,
-            owner: card.owner,
-          }))
-        );
+        setCards(res);
       })
+
       .catch((err) => console.log(err));
   }, []);
 
@@ -84,6 +72,7 @@ function Main(props) {
         <ul className="grid__list">
           {cards.map((card) => (
             <Card
+              key={card._id}
               card={card}
               _id={card._id}
               src={card.link}

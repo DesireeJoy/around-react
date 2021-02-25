@@ -1,6 +1,6 @@
 import logo from "../images/Logo.svg";
 import React, { useState, useEffect, createContext } from "react";
-import api from "../utils/Api";
+import api from "../utils/api";
 
 function Card(props) {
   return (

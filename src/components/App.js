@@ -3,7 +3,7 @@ import Main from "./main.js";
 import Footer from "./footer.js";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 function App() {
   //States
@@ -11,7 +11,6 @@ function App() {
   const [isEditProfileOpen, setIsEditProfileOpen] = React.useState(false);
   const [isAddPlaceOpen, setIsAddPlaceOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
-  const [cards, setCards] = React.useState([]);
   const [enlargeImage, setEnlargeImage] = useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
 
@@ -32,10 +31,7 @@ function App() {
   function handleDeleteClick(e) {
     setIsDeleteOpen(true);
   }
-  function handleCardClick(card) {
-    setEnlargeImage(true);
-    setSelectedCard(card);
-  }
+
   //Close Popups
   function closeAllPopups() {
     setIsAddPlaceOpen(false);
@@ -60,8 +56,6 @@ function App() {
             handleAddPlaceClick={handleAddPlaceClick}
             handleDeleteClick={handleDeleteClick}
             handleCardClick={handleCardClick}
-            handleUpdateUser
-            cards={cards}
           />
           <ImagePopup
             onClose={closeAllPopups}
@@ -112,7 +106,6 @@ function App() {
               defaultValue
               minLength={2}
               maxLength={30}
-              value="Place Name"
             />
             <span
               className="popup__form_input_type_active inputPlace-error error"
@@ -124,7 +117,6 @@ function App() {
               id="inputFile"
               name="placeFileName"
               placeholder="Image link"
-              value="Input File"
             />
             <span
               className="popup__form_input_type_active inputFile-error error"
