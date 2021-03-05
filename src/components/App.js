@@ -25,7 +25,7 @@ function App() {
       })
       .catch((err) => console.log(err));
   }, []);
-  // console.log(currentUser);
+
   //Open Popups
   function handleEditAvatarClick(e) {
     e.preventDefault();

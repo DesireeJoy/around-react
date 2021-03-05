@@ -11,17 +11,21 @@ function Main(props) {
 
   const currentUser = React.useContext(currentUserContext);
 
-  // useEffect(() => {
-  //   api
-  //     .getUserInfo()
-  //     .then((res) => {
-  //       setUserName(res.name);
-  //       setUserTitle(res.about);
-  //       // myId = res._id;
-  //       setUserAvatar(res.avatar);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
+  function handleCardLike(card) {
+    // Check one more time if this card was already liked
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    // Send a request to the API and getting the updated card data
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        // Create a new array based on the existing one and putting a new card into it
+        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+        // Update the state
+        setCards(newCard);
+      })
+      .catch((err) => console.log(err));
+  }
 
   React.useEffect(() => {
     api
@@ -32,7 +36,7 @@ function Main(props) {
 
       .catch((err) => console.log(err));
   }, []);
-  console.log(currentUser);
+
   return (
     <main className="content">
       {/* Profile Section */}
@@ -82,14 +86,14 @@ function Main(props) {
               title={card.name}
               likes={card.likes}
               owner={card.owner}
+              onCardLike={() => {
+                handleCardLike(card);
+              }}
               handleCardClick={() => {
                 props.handleCardClick(card);
               }}
               handleDeleteClick={(card) => {
                 props.handleDeleteClick(card);
-              }}
-              handleCardLike={(card) => {
-                props.handleCardLike(card);
               }}
             />
           ))}

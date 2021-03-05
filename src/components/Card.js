@@ -4,8 +4,8 @@ import api from "../utils/api";
 import currentUserContext from "../contexts/CurrentUserContext";
 
 function Card(props) {
+  console.log(props);
   const currentUser = React.useContext(currentUserContext);
-
   // Checking if you are the owner of the current card
   const isOwn = props.card.owner._id === currentUser._id;
 
@@ -21,7 +21,9 @@ function Card(props) {
   const cardLikeButtonClassName = `button grid__heart ${
     isLiked ? "grid__heart_active" : ""
   }`;
-
+  function handleLikeClick() {
+    props.onCardLike(props.card);
+  }
   return (
     <li className="grid__card">
       <button
@@ -48,7 +50,9 @@ function Card(props) {
             className={cardLikeButtonClassName}
             type="button"
             aria-label="like"
-            onClick={props.likeCardClick}
+            onClick={() => {
+              handleLikeClick();
+            }}
           ></button>
           <p className="grid__like-count">{props.likes.length}</p>
         </div>
