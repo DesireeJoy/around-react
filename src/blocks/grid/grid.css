@@ -4,6 +4,7 @@
 @import url("./__caption/grid__caption.css");
 @import url("./__card-text/grid__card-text.css");
 @import url("./__heart/grid__heart.css");
+@import url("./__btn_del/_hidden/grid__btn_del_hidden.css");
 @import url("./__btn_del/grid__btn_del.css");
 @import url("./__btn_popup/grid__btn_popup.css");
 @import url("./__image/_active/grid__image_active.css");

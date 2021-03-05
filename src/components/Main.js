@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import Card from "./Card";
+import currentUserContext from "../contexts/CurrentUserContext";
 
 function Main(props) {
   const [userName, setUserName] = React.useState("");
@@ -8,17 +9,19 @@ function Main(props) {
   const [userAvatar, setUserAvatar] = React.useState("");
   const [cards, setCards] = React.useState([]);
 
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setUserName(res.name);
-        setUserTitle(res.about);
-        // myId = res._id;
-        setUserAvatar(res.avatar);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  const currentUser = React.useContext(currentUserContext);
+
+  // useEffect(() => {
+  //   api
+  //     .getUserInfo()
+  //     .then((res) => {
+  //       setUserName(res.name);
+  //       setUserTitle(res.about);
+  //       // myId = res._id;
+  //       setUserAvatar(res.avatar);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   React.useEffect(() => {
     api
@@ -29,7 +32,7 @@ function Main(props) {
 
       .catch((err) => console.log(err));
   }, []);
-
+  console.log(currentUser);
   return (
     <main className="content">
       {/* Profile Section */}
@@ -45,11 +48,11 @@ function Main(props) {
             id="avatar Image"
             alt="Avatar Image for User"
             className="profile__avatar"
-            src={userAvatar}
+            src={currentUser.avatar}
           />
           <div className="profile__info">
-            <h1 className="profile__name">{userName}</h1>
-            <p className="profile__title">{userTitle}</p>
+            <h1 className="profile__name">{currentUser.name}</h1>
+            <p className="profile__title">{currentUser.about}</p>
           </div>
           <button
             className="profile__editbtn button"
