@@ -21,9 +21,7 @@ function Card(props) {
   const cardLikeButtonClassName = `button grid__heart ${
     isLiked ? "grid__heart_active" : ""
   }`;
-  function handleLikeClick() {
-    props.onCardLike(props.card);
-  }
+
   return (
     <li className="grid__card">
       <button
@@ -51,7 +49,7 @@ function Card(props) {
             type="button"
             aria-label="like"
             onClick={() => {
-              handleLikeClick();
+              props.onCardLike(props.card);
             }}
           ></button>
           <p className="grid__like-count">{props.likes.length}</p>
