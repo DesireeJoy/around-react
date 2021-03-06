@@ -65,8 +65,8 @@ function Main(props) {
               handleCardClick={() => {
                 props.handleCardClick(card);
               }}
-              handleDeleteClick={(card) => {
-                props.onCardDelete(card);
+              handleDeleteClick={() => {
+                props.onCardDeleteClick(card);
               }}
             />
           ))}

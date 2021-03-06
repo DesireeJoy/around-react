@@ -9,6 +9,7 @@ import currentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import DeleteConfirmPopup from "./DeleteConfirmPopup";
 
 function App() {
   //States
@@ -24,6 +25,18 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
+
+  function handleDeleteConfirm() {
+    setIsDeleteOpen(false);
+
+    api
+      .removeCard(selectedCard._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== selectedCard._id);
+        setCards(newCards);
+      })
+      .catch((err) => console.log(err));
+  }
 
   React.useEffect(() => {
     api
@@ -51,11 +64,9 @@ function App() {
   }, []);
 
   function handleUpdateUser({ name, about }) {
-    console.log("YEAH");
     api
       .setUserInfo({ name, about })
       .then((res) => {
-        console.log(res);
         setCurrentUser(res);
       })
       .then(() => {
@@ -78,9 +89,20 @@ function App() {
     e.preventDefault();
     setIsAddPlaceOpen(true);
   }
-  function handleDeleteClick(e) {
-    setIsDeleteOpen(true);
+
+  function handleDeleteConfirm(e) {
+    e.preventDefault();
+    setIsDeleteOpen(false);
+
+    api
+      .removeCard(selectedCard._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== selectedCard._id);
+        setCards(newCards);
+      })
+      .catch((err) => console.log(err));
   }
+
   function handleUpdateAvatar(avatar) {
     api
       .setAvatar({ avatar })
@@ -124,15 +146,6 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  function handleDeleteClick(card) {
-    api
-      .removeCard(card._id)
-      .then(() => {
-        const newCards = cards.filter((c) => c._id !== card._id);
-        setCards(newCards);
-      })
-      .catch((err) => console.log(err));
-  }
   function handleCardLike(card) {
     // Check one more time if this card was already liked
 
@@ -151,6 +164,10 @@ function App() {
       return false;
     });
   }
+  function handleDeleteWarn(card) {
+    setSelectedCard(card);
+    setIsDeleteOpen(true);
+  }
   return (
     <div>
       <div className="body">
@@ -162,21 +179,21 @@ function App() {
               handleEditAvatarClick={handleEditAvatarClick}
               handleEditProfileClick={handleEditProfileClick}
               handleAddPlaceClick={handleAddPlaceClick}
-              handleDeleteClick={handleDeleteClick}
               handleCardClick={handleCardClick}
               cards={cards}
               onCardLike={handleCardLike}
-              onCardDelete={handleDeleteClick}
+              onCardDeleteClick={handleDeleteWarn}
             />
             <ImagePopup
               onClose={closeAllPopups}
               selectedCard={selectedCard}
               isOpen={enlargeImage}
             />
-            <PopupWithForm
+            <DeleteConfirmPopup
               isOpen={isDeleteOpen}
               onClose={closeAllPopups}
-              name="profile"
+              onSubmit={handleDeleteConfirm}
+              name="delete"
               title="Are you sure?"
               buttonText="Yes"
             />
