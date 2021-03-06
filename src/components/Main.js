@@ -36,7 +36,7 @@ function Main(props) {
     const isLiked = card.likes.some((c) => c._id === currentUser._id);
 
     // Send a request to the API and getting the updated card data
-    api.changeLikeCardStatus(card._id, isLiked).then(() => {
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
       // Create a new array based on the existing one and put a new card into it
       const newCards = cards.map((item) =>
         item._id === card._id ? newCard : item

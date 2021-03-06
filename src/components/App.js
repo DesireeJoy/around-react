@@ -6,11 +6,16 @@ import ImagePopup from "./ImagePopup";
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import currentUserContext from "../contexts/CurrentUserContext";
-
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 function App() {
   //States
-  const [isEditAvatarOpen, setIsEditAvatarOpen] = React.useState(false);
-  const [isEditProfileOpen, setIsEditProfileOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(
+    false
+  );
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(
+    false
+  );
   const [isAddPlaceOpen, setIsAddPlaceOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
   const [enlargeImage, setEnlargeImage] = useState(false);
@@ -26,14 +31,28 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
+  function handleUpdateUser({ name, about }) {
+    console.log("YEAH");
+    api
+      .setUserInfo({ name, about })
+      .then((res) => {
+        console.log(res);
+        setCurrentUser(res);
+      })
+      .then(() => {
+        setIsEditProfilePopupOpen(false);
+      })
+      .catch((err) => console.log(err));
+  }
+
   //Open Popups
   function handleEditAvatarClick(e) {
     e.preventDefault();
-    setIsEditAvatarOpen(true);
+    setIsEditAvatarPopupOpen(true);
   }
   function handleEditProfileClick(e) {
     e.preventDefault();
-    setIsEditProfileOpen(true);
+    setIsEditProfilePopupOpen(true);
   }
 
   function handleAddPlaceClick(e) {
@@ -43,12 +62,23 @@ function App() {
   function handleDeleteClick(e) {
     setIsDeleteOpen(true);
   }
+  function handleUpdateAvatar(avatar) {
+    api
+      .setAvatar({ avatar })
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .then(() => {
+        setIsEditAvatarPopupOpen(false);
+      })
+      .catch((err) => console.log(err));
+  }
 
   //Close Popups
   function closeAllPopups() {
     setIsAddPlaceOpen(false);
-    setIsEditProfileOpen(false);
-    setIsEditAvatarOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
     setIsDeleteOpen(false);
     setEnlargeImage(false);
   }
@@ -84,26 +114,12 @@ function App() {
               buttonText="Yes"
             />
 
-            <PopupWithForm
-              isOpen={isEditAvatarOpen}
+            <EditAvatarPopup
+              isOpen={isEditAvatarPopupOpen}
               onClose={closeAllPopups}
-              name="avatar"
-              title="Change Profile Picture"
-              buttonText="Save"
-            >
-              <input
-                className="form_input popup__input form__input_type_avatar-link"
-                id="avatar-input"
-                type="url"
-                name="link"
-                placeholder="avatar"
-                required
-              />
-              <span
-                className="popup__form_input_type_error avatar-input-error error"
-                name="inputFile-error"
-              ></span>
-            </PopupWithForm>
+              onUpdateAvatar={handleUpdateAvatar}
+            />
+
             <PopupWithForm
               isOpen={isAddPlaceOpen}
               onClose={closeAllPopups}
@@ -137,43 +153,11 @@ function App() {
                 name="inputFile-error"
               />
             </PopupWithForm>
-            <PopupWithForm
-              isOpen={isEditProfileOpen}
+            <EditProfilePopup
+              isOpen={isEditProfilePopupOpen}
               onClose={closeAllPopups}
-              name="profile"
-              title="Edit Profile"
-              buttonText="Save"
-            >
-              <input
-                type="text"
-                className="popup__input form_input"
-                id="inputName"
-                defaultValue="Jacques Cousteau"
-                name="profileName"
-                minLength={2}
-                maxLength={40}
-                required
-              />
-              <span
-                className="popup__form_input_type_active inputName-error error"
-                name="inputName-error"
-              />
-              <input
-                type="text"
-                className="popup__input form_input"
-                id="inputTitle"
-                defaultValue="Explorer"
-                name="profileTitle"
-                minLength={2}
-                maxLength={200}
-                required
-              />
-              <span
-                className="popup__form_input_type_active inputTitle-error error"
-                name="inputTitle-error"
-              />
-            </PopupWithForm>
-
+              onUpdateUser={handleUpdateUser}
+            />
             <Footer />
           </currentUserContext.Provider>
         </div>
