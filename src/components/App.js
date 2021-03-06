@@ -8,6 +8,8 @@ import api from "../utils/api";
 import currentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
+
 function App() {
   //States
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(
@@ -21,12 +23,29 @@ function App() {
   const [enlargeImage, setEnlargeImage] = useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
+  const [cards, setCards] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     api
       .getUserInfo()
       .then((res) => {
         setCurrentUser(res);
+      })
+      .then(() => {
+        api
+          .getCardList()
+          .then((res) => {
+            setCards(
+              res.map((card) => ({
+                name: card.name,
+                link: card.link,
+                _id: card._id,
+                likes: card.likes,
+                owner: card.owner,
+              }))
+            );
+          })
+          .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
   }, []);
@@ -86,7 +105,50 @@ function App() {
     setEnlargeImage(true);
     setSelectedCard(card);
   }
+  function handleAddPlaceSubmit({ name, link }) {
+    api
+      .addCard({ name, link })
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .then(() => setIsAddPlaceOpen(false))
+      .catch((err) => console.log(err));
+  }
+  React.useEffect(() => {
+    api
+      .getInitialCards()
+      .then((res) => {
+        setCards(res);
+      })
 
+      .catch((err) => console.log(err));
+  }, []);
+
+  function handleDeleteClick(card) {
+    api
+      .removeCard(card._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      })
+      .catch((err) => console.log(err));
+  }
+  function handleCardLike(card) {
+    // Check one more time if this card was already liked
+
+    const isLiked = card.likes.some((c) => c._id === currentUser._id);
+
+    // Send a request to the API and getting the updated card data
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      // Create a new array based on the existing one and put a new card into it
+      const newCards = cards.map((item) =>
+        item._id === card._id ? newCard : item
+      );
+      // Update the state
+      setCards(newCards);
+      return false;
+    });
+  }
   return (
     <div>
       <div className="body">
@@ -100,6 +162,9 @@ function App() {
               handleAddPlaceClick={handleAddPlaceClick}
               handleDeleteClick={handleDeleteClick}
               handleCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleDeleteClick}
             />
             <ImagePopup
               onClose={closeAllPopups}
@@ -113,46 +178,16 @@ function App() {
               title="Are you sure?"
               buttonText="Yes"
             />
-
             <EditAvatarPopup
               isOpen={isEditAvatarPopupOpen}
               onClose={closeAllPopups}
               onUpdateAvatar={handleUpdateAvatar}
             />
-
-            <PopupWithForm
+            <AddPlacePopup
               isOpen={isAddPlaceOpen}
               onClose={closeAllPopups}
-              name="card"
-              title="New Place"
-              buttonText="Save"
-            >
-              <input
-                type="text"
-                className="popup__card_input form_input"
-                id="inputPlace"
-                name="placeName"
-                placeholder="Title"
-                defaultValue
-                minLength={2}
-                maxLength={30}
-              />
-              <span
-                className="popup__form_input_type_active inputPlace-error error"
-                name="inputPlace-error"
-              />
-              <input
-                type="url"
-                className="popup__card_input form_input"
-                id="inputFile"
-                name="placeFileName"
-                placeholder="Image link"
-              />
-              <span
-                className="popup__form_input_type_active inputFile-error error"
-                name="inputFile-error"
-              />
-            </PopupWithForm>
+              onAddPlace={handleAddPlaceSubmit}
+            />
             <EditProfilePopup
               isOpen={isEditProfilePopupOpen}
               onClose={closeAllPopups}
