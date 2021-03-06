@@ -86,7 +86,7 @@ class Api {
       method: whichMethod,
       headers: this._headers,
     })
-      .then(console.log(whichMethod), this._checkResponse)
+      .then(this._checkResponse)
       .catch((err) => console.log(err));
   }
 }

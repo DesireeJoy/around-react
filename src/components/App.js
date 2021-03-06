@@ -144,8 +144,10 @@ function App() {
       const newCards = cards.map((item) =>
         item._id === card._id ? newCard : item
       );
+
       // Update the state
       setCards(newCards);
+
       return false;
     });
   }
