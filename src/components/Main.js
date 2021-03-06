@@ -11,22 +11,6 @@ function Main(props) {
 
   const currentUser = React.useContext(currentUserContext);
 
-  function handleCardLike(card) {
-    // Check one more time if this card was already liked
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
-    // Send a request to the API and getting the updated card data
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
-      .then((newCard) => {
-        // Create a new array based on the existing one and putting a new card into it
-        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
-        // Update the state
-        setCards(newCard);
-      })
-      .catch((err) => console.log(err));
-  }
-
   React.useEffect(() => {
     api
       .getInitialCards()
@@ -36,6 +20,32 @@ function Main(props) {
 
       .catch((err) => console.log(err));
   }, []);
+
+  function handleDeleteClick(card) {
+    api
+      .removeCard(card._id)
+      .then(() => {
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      })
+      .catch((err) => console.log(err));
+  }
+  function handleCardLike(card) {
+    // Check one more time if this card was already liked
+
+    const isLiked = card.likes.some((c) => c._id === currentUser._id);
+
+    // Send a request to the API and getting the updated card data
+    api.changeLikeCardStatus(card._id, isLiked).then(() => {
+      // Create a new array based on the existing one and put a new card into it
+      const newCards = cards.map((item) =>
+        item._id === card._id ? newCard : item
+      );
+      // Update the state
+      setCards(newCards);
+      return false;
+    });
+  }
 
   return (
     <main className="content">
@@ -93,7 +103,7 @@ function Main(props) {
                 props.handleCardClick(card);
               }}
               handleDeleteClick={(card) => {
-                props.handleDeleteClick(card);
+                handleDeleteClick(card);
               }}
             />
           ))}

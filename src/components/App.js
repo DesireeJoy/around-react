@@ -64,6 +64,7 @@ function App() {
           <currentUserContext.Provider value={currentUser}>
             <Header />
             <Main
+              userId={currentUser._id}
               handleEditAvatarClick={handleEditAvatarClick}
               handleEditProfileClick={handleEditProfileClick}
               handleAddPlaceClick={handleAddPlaceClick}

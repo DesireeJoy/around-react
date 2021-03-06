@@ -4,8 +4,8 @@ import api from "../utils/api";
 import currentUserContext from "../contexts/CurrentUserContext";
 
 function Card(props) {
-  console.log(props);
   const currentUser = React.useContext(currentUserContext);
+
   // Checking if you are the owner of the current card
   const isOwn = props.card.owner._id === currentUser._id;
 
