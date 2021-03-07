@@ -17,11 +17,13 @@ function AddPlacePopup(props) {
       name: cardName,
       link: cardLink,
     });
+    setCardLink("");
+    setCardName("");
   }
   return (
     <PopupWithForm
       isOpen={props.isOpen}
-      onClose={props.closeAllPopups}
+      onClose={props.onClose}
       onSubmit={handleAddCard}
       name="card"
       title="New Place"

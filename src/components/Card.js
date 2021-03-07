@@ -1,10 +1,10 @@
 import logo from "../images/Logo.svg";
 import React, { useState, useEffect, createContext } from "react";
 import api from "../utils/api";
-import currentUserContext from "../contexts/CurrentUserContext";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function Card(props) {
-  const currentUser = React.useContext(currentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
 
   // Checking if you are the owner of the current card
   const isOwn = props.card.owner._id === currentUser._id;

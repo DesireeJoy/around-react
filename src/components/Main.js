@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import Card from "./Card";
-import currentUserContext from "../contexts/CurrentUserContext";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userTitle, setUserTitle] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
-
-  const currentUser = React.useContext(currentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
 
   return (
     <main className="content">

@@ -5,7 +5,7 @@ import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
 import React, { useState, useEffect } from "react";
 import api from "../utils/api";
-import currentUserContext from "../contexts/CurrentUserContext";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
@@ -26,7 +26,8 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
 
-  function handleDeleteConfirm() {
+  function handleDeleteConfirm(e) {
+    e.preventDefault();
     setIsDeleteOpen(false);
 
     api
@@ -37,7 +38,6 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-
   React.useEffect(() => {
     api
       .getUserInfo()
@@ -47,17 +47,11 @@ function App() {
       .then(() => {
         api
           .getCardList()
+
           .then((res) => {
-            setCards(
-              res.map((card) => ({
-                name: card.name,
-                link: card.link,
-                _id: card._id,
-                likes: card.likes,
-                owner: card.owner,
-              }))
-            );
+            setCards(res);
           })
+
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
@@ -88,19 +82,6 @@ function App() {
   function handleAddPlaceClick(e) {
     e.preventDefault();
     setIsAddPlaceOpen(true);
-  }
-
-  function handleDeleteConfirm(e) {
-    e.preventDefault();
-    setIsDeleteOpen(false);
-
-    api
-      .removeCard(selectedCard._id)
-      .then(() => {
-        const newCards = cards.filter((c) => c._id !== selectedCard._id);
-        setCards(newCards);
-      })
-      .catch((err) => console.log(err));
   }
 
   function handleUpdateAvatar(avatar) {
@@ -152,17 +133,20 @@ function App() {
     const isLiked = card.likes.some((c) => c._id === currentUser._id);
 
     // Send a request to the API and getting the updated card data
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      // Create a new array based on the existing one and put a new card into it
-      const newCards = cards.map((item) =>
-        item._id === card._id ? newCard : item
-      );
+    api
+      .changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        // Create a new array based on the existing one and put a new card into it
+        const newCards = cards.map((item) =>
+          item._id === card._id ? newCard : item
+        );
 
-      // Update the state
-      setCards(newCards);
+        // Update the state
+        setCards(newCards);
 
-      return false;
-    });
+        return false;
+      })
+      .catch((err) => console.log(err));
   }
   function handleDeleteWarn(card) {
     setSelectedCard(card);
@@ -172,10 +156,9 @@ function App() {
     <div>
       <div className="body">
         <div className="page">
-          <currentUserContext.Provider value={currentUser}>
+          <CurrentUserContext.Provider value={currentUser}>
             <Header />
             <Main
-              userId={currentUser._id}
               handleEditAvatarClick={handleEditAvatarClick}
               handleEditProfileClick={handleEditProfileClick}
               handleAddPlaceClick={handleAddPlaceClick}
@@ -213,7 +196,7 @@ function App() {
               onUpdateUser={handleUpdateUser}
             />
             <Footer />
-          </currentUserContext.Provider>
+          </CurrentUserContext.Provider>
         </div>
       </div>
     </div>

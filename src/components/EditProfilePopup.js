@@ -1,6 +1,6 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
-import currentUserContext from "../contexts/CurrentUserContext";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function EditProfilePopup(props) {
   const [name, setName] = React.useState("");
@@ -21,7 +21,7 @@ function EditProfilePopup(props) {
   }
 
   // Subscription to the context
-  const currentUser = React.useContext(currentUserContext);
+  const currentUser = React.useContext(CurrentUserContext);
 
   // After loading the current user from the API
   // their data will be used in managed components.
